@@ -28,7 +28,14 @@ zepto-data-ai-platform/
 └── support_assistant/
     ├── README.md
     ├── requirements.txt
-    └── ...
+    ├── docs/              # Zepto policy corpus (doc_01.txt … doc_08.txt)
+    ├── ingestion.py        # load, chunk, embed, ChromaDB
+    ├── prompts.py          # structured prompt template
+    ├── graph.py            # LangGraph StateGraph (classify → retrieve/direct)
+    ├── schemas.py           # Pydantic request/response models
+    ├── llm_client.py        # optional real-LLM (Groq free tier) extension
+    ├── main.py               # FastAPI app (POST /ask)
+    └── Dockerfile
 ```
 
 ## Setup
@@ -55,4 +62,14 @@ key choices: why this dataset, why this model, why this chunking strategy, etc.)
 *TBD*
 
 ### Support Assistant
-*TBD*
+A LangGraph-orchestrated RAG pipeline grounded in Zepto's own policy
+documents. Each policy doc is treated as a single chunk (short enough that
+finer-grained splitting isn't needed) and embedded with `all-MiniLM-L6-v2`
+into a persistent ChromaDB collection. A 3-node `StateGraph` classifies each
+query (keyword heuristic), retrieves the top-3 most similar chunks for
+policy questions, and generates a grounded, schema-validated answer. Every
+LLM call is gated behind a `MOCK_LLM` toggle so the graded baseline is
+fully offline and deterministic; a real LLM call (Groq's free tier) is an
+optional, ungraded extension. See
+[`support_assistant/README.md`](support_assistant/README.md) for the full
+architecture write-up.

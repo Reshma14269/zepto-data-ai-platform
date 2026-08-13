@@ -1,3 +1,8 @@
-requests>=2.31
-python-dotenv>=1.0
-numpy>=1.26
+fastapi==0.115.0
+uvicorn[standard]==0.30.6
+pydantic==2.9.2
+langgraph==0.2.34
+langchain-core==0.3.9
+chromadb==0.5.11
+sentence-transformers==3.1.1
+requests==2.32.3
